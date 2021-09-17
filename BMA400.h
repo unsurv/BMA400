@@ -145,6 +145,35 @@
 #define acc_filt2        0x01 // fixed 100 Hz ODR filter
 #define acc_filt_lp      0x02 // fixed 100 Hz ODR filter, 1 Hz BW
 
+// define tap configs
+
+#define INT_STAT1_SINGLE_TAP 0x04
+#define INT_STAT1_DOUBLE_TAP 0x08
+
+#define tap_sens_0       0x00 // highest tap sensitivity
+#define tap_sens_1       0x01
+#define tap_sens_2       0x02
+#define tap_sens_3       0x03
+#define tap_sens_4       0x04
+#define tap_sens_5       0x05
+#define tap_sens_6       0x06 // lowest tap sensitivity
+
+
+#define tics_th_6        0x00 // 6 data samples for high-low tap signal change time
+#define tics_th_9        0x01
+#define tics_th_12       0x02
+#define tics_th_18       0x03
+
+#define quiet_60         0x00 // 60 data samples quiet time between single or doube taps 
+#define quiet_80         0x01
+#define quiet_100        0x02
+#define quiet_120        0x03
+
+#define quiet_dt_4       0x00 // 4 data samples minimum time between double taps
+#define quiet_dt_8       0x01
+#define quiet_dt_12      0x02
+#define quiet_dt_16      0x03
+
 
 class BMA400
 {
@@ -153,6 +182,7 @@ class BMA400
   float getAres(uint8_t Ascale);
   uint8_t getChipID();
   void initBMA400(uint8_t Ascale, uint8_t SR, uint8_t power_Mode, uint8_t OSR, uint8_t acc_filter);
+  void initBMA400forTapping(uint8_t tap_sensitivity);
   void CompensationBMA400(uint8_t Ascale, uint8_t SR, uint8_t power_Mode, uint8_t OSR, uint8_t acc_filter, float * offset);
   void resetBMA400();
   void selfTestBMA400();

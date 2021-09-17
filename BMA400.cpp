@@ -28,7 +28,7 @@ uint8_t BMA400::getChipID()
 
 uint8_t BMA400::getStatus()
 {
-  uint8_t c = readByte(BMA400_ADDRESS, BMA400_INT_STAT_0);
+  uint8_t c = readByte(BMA400_ADDRESS, BMA400_INT_STAT_1);
   return c;
 }
 
@@ -86,11 +86,36 @@ void BMA400::initBMA400(uint8_t Ascale, uint8_t SR, uint8_t power_Mode, uint8_t 
    // Config GEN1 on INT2
    writeByte(BMA400_ADDRESS,BMA400_GEN1INT_CONFIG0, 0xFA);       // all axes, fixed 100 Hz, reference every time, hysteresis 48 mg
    writeByte(BMA400_ADDRESS,BMA400_GEN1INT_CONFIG1, 0x01);       // inactive motion interrupt configuration
-   writeByte(BMA400_ADDRESS,BMA400_GEN1INT_CONFIG2, 0x03);       // set threshold 24 mg (8 mg per count)
-   writeByte(BMA400_ADDRESS,BMA400_GEN1INT_CONFIG31,0x40);       // measured over 64 data samples
+   writeByte(BMA400_ADDRESS,BMA400_GEN1INT_CONFIG2, 0x02);       // set threshold 16 mg (8 mg per count)
+   writeByte(BMA400_ADDRESS,BMA400_GEN1INT_CONFIG31,0xFF);       // measured over 256 data samples
 
   /* Enable interrupts */
    writeByte(BMA400_ADDRESS,BMA400_INT_CONFIG0,  0x04);          // enable GEN1 interrupt (bit 2) 
+}
+
+void BMA400::initBMA400forTapping(uint8_t tap_sensitivity)
+{
+   /* Normal mode configuration */
+   // set bandwidth to 0.2x sample rate (bit 7), OSR in low-power mode, power mode
+   writeByte(BMA400_ADDRESS,BMA400_ACC_CONFIG0, 0x80 | osr3 << 5 | normal_Mode);
+   delay(2); // wait 1.5 ms
+   writeByte(BMA400_ADDRESS,BMA400_ACC_CONFIG1, AFS_16G << 6 | osr3 << 4 | SR_200Hz); // set full-scale range, oversampling and sample rate
+   writeByte(BMA400_ADDRESS,BMA400_ACC_CONFIG2, acc_filt1 << 2);             // set accel filter
+   
+
+   /* Tap int configuration */
+
+
+   writeByte(BMA400_ADDRESS,BMA400_TAP_CONFIG, 0x00 << 3 | tap_sensitivity); // use all 3 axis and set sensitivity
+
+   writeByte(BMA400_ADDRESS,BMA400_TAP_CONFIG1, quiet_dt_8 << 4 | quiet_80 << 2 | tics_th_6); // set tap timings
+
+   writeByte(BMA400_ADDRESS,BMA400_INT12_MAP, 0x04);              // map tapping to INT1
+   writeByte(BMA400_ADDRESS,BMA400_INT12_IO_CTRL, 0x02);          // set INT1 interrupt push-pull, active HIGH 
+
+   writeByte(BMA400_ADDRESS,BMA400_INT_CONFIG1, 0x08 | 0x04);     // enable double and single tap interrupts
+   // writeByte(BMA400_ADDRESS,BMA400_INT_CONFIG1, 0x04);     // enable double tap interrupts
+
 }
 
 void BMA400::activateNoMotionInterrupt()
