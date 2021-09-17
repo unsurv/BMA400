@@ -113,7 +113,7 @@ void BMA400::initBMA400forTapping(uint8_t tap_sensitivity)
    writeByte(BMA400_ADDRESS,BMA400_INT12_MAP, 0x04);              // map tapping to INT1
    writeByte(BMA400_ADDRESS,BMA400_INT12_IO_CTRL, 0x02);          // set INT1 interrupt push-pull, active HIGH 
 
-   writeByte(BMA400_ADDRESS,BMA400_INT_CONFIG1, 0x08 | 0x04);     // enable double and single tap interrupts
+   writeByte(BMA400_ADDRESS,BMA400_INT_CONFIG1,0x01 << 7 | 0x08 | 0x04);     // enable latching interrupts, double and single tap interrupts
    // writeByte(BMA400_ADDRESS,BMA400_INT_CONFIG1, 0x04);     // enable double tap interrupts
 
 }

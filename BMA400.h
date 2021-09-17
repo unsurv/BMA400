@@ -148,7 +148,7 @@
 // define tap configs
 
 #define INT_STAT1_SINGLE_TAP 0x04
-#define INT_STAT1_DOUBLE_TAP 0x08
+#define INT_STAT1_DOUBLE_TAP 0x0c // 0x08 for non latching interrupts, 0x0c for latching
 
 #define tap_sens_0       0x00 // highest tap sensitivity
 #define tap_sens_1       0x01
