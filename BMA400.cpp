@@ -95,26 +95,57 @@ void BMA400::initBMA400(uint8_t Ascale, uint8_t SR, uint8_t power_Mode, uint8_t 
 
 void BMA400::initBMA400forTapping(uint8_t tap_sensitivity)
 {
-   /* Normal mode configuration */
-   // set bandwidth to 0.2x sample rate (bit 7), OSR in low-power mode, power mode
-   writeByte(BMA400_ADDRESS,BMA400_ACC_CONFIG0, 0x80 | osr3 << 5 | normal_Mode);
-   delay(2); // wait 1.5 ms
-   writeByte(BMA400_ADDRESS,BMA400_ACC_CONFIG1, AFS_16G << 6 | osr3 << 4 | SR_200Hz); // set full-scale range, oversampling and sample rate
-   writeByte(BMA400_ADDRESS,BMA400_ACC_CONFIG2, acc_filt1 << 2);             // set accel filter
-   
+  /* Normal mode configuration */
+  // set bandwidth to 0.2x sample rate (bit 7), OSR in low-power mode, power mode
+  writeByte(BMA400_ADDRESS, BMA400_ACC_CONFIG0, 0x80 | osr3 << 5 | normal_Mode);
+  delay(2); // wait 1.5 ms
+  writeByte(BMA400_ADDRESS, BMA400_ACC_CONFIG1, AFS_16G << 6 | osr3 << 4 | SR_200Hz); // set full-scale range, oversampling and sample rate
+  writeByte(BMA400_ADDRESS, BMA400_ACC_CONFIG2, acc_filt1 << 2);             // set accel filter
+  
+  /* Tap int configuration */
+  writeByte(BMA400_ADDRESS, BMA400_TAP_CONFIG, 0x00 << 3 | tap_sensitivity); // use all 3 axis and set sensitivity
+  writeByte(BMA400_ADDRESS, BMA400_TAP_CONFIG1, quiet_dt_8 << 4 | quiet_80 << 2 | tics_th_6); // set tap timings
+  writeByte(BMA400_ADDRESS, BMA400_INT12_MAP, 0x04);              // map tapping to INT1
+  writeByte(BMA400_ADDRESS, BMA400_INT12_IO_CTRL, 0x02);          // set INT1 interrupt push-pull, active HIGH 
+  writeByte(BMA400_ADDRESS, BMA400_INT_CONFIG1, 0x01 << 7 | 0x08 | 0x04);     // enable latching interrupts, double and single tap interrupts
+  // writeByte(BMA400_ADDRESS,BMA400_INT_CONFIG1, 0x04);     // enable double tap interrupts
 
-   /* Tap int configuration */
+}
+
+void BMA400::enableStepCountNotWrist()
+{
+   /* setup step counting for non wrist */
+  uint8_t current_int1_config = readByte(BMA400_ADDRESS, BMA400_INT_CONFIG1);
+  writeByte(BMA400_ADDRESS, BMA400_INT_CONFIG1, current_int1_config + 1);     // enable step counting
 
 
-   writeByte(BMA400_ADDRESS,BMA400_TAP_CONFIG, 0x00 << 3 | tap_sensitivity); // use all 3 axis and set sensitivity
+  writeByte(BMA400_ADDRESS, BMA400_STEP_COUNTERCONFIG0,   0x01); 
+  writeByte(BMA400_ADDRESS, BMA400_STEP_COUNTERCONFIG1,   0x32); 
+  writeByte(BMA400_ADDRESS, BMA400_STEP_COUNTERCONFIG2,   0x78); 
+  writeByte(BMA400_ADDRESS, BMA400_STEP_COUNTERCONFIG3,   0xE6); 
+  writeByte(BMA400_ADDRESS, BMA400_STEP_COUNTERCONFIG4,   0x87); 
+  writeByte(BMA400_ADDRESS, BMA400_STEP_COUNTERCONFIG5,   0x00); 
+  writeByte(BMA400_ADDRESS, BMA400_STEP_COUNTERCONFIG6,   0x84); 
+  writeByte(BMA400_ADDRESS, BMA400_STEP_COUNTERCONFIG7,   0x6C); 
+  writeByte(BMA400_ADDRESS, BMA400_STEP_COUNTERCONFIG8,   0x9C); 
+  writeByte(BMA400_ADDRESS, BMA400_STEP_COUNTERCONFIG9,   0x75); 
+  writeByte(BMA400_ADDRESS, BMA400_STEP_COUNTERCONFIG10,  0x64);
+  writeByte(BMA400_ADDRESS, BMA400_STEP_COUNTERCONFIG11,  0x7E);
+  writeByte(BMA400_ADDRESS, BMA400_STEP_COUNTERCONFIG12,  0xAA);
+  writeByte(BMA400_ADDRESS, BMA400_STEP_COUNTERCONFIG13,  0x0C);
+  writeByte(BMA400_ADDRESS, BMA400_STEP_COUNTERCONFIG14,  0x0C);
+  writeByte(BMA400_ADDRESS, BMA400_STEP_COUNTERCONFIG15,  0x4A);
+  writeByte(BMA400_ADDRESS, BMA400_STEP_COUNTERCONFIG16,  0xA0);
+  writeByte(BMA400_ADDRESS, BMA400_STEP_COUNTERCONFIG17,  0x00);
+  writeByte(BMA400_ADDRESS, BMA400_STEP_COUNTERCONFIG18,  0x00);
+  writeByte(BMA400_ADDRESS, BMA400_STEP_COUNTERCONFIG19,  0x0C);
+  writeByte(BMA400_ADDRESS, BMA400_STEP_COUNTERCONFIG20,  0x3C);
+  writeByte(BMA400_ADDRESS, BMA400_STEP_COUNTERCONFIG21,  0xF0);
+  writeByte(BMA400_ADDRESS, BMA400_STEP_COUNTERCONFIG22,  0x01);
+  writeByte(BMA400_ADDRESS, BMA400_STEP_COUNTERCONFIG23,  0x00);
 
-   writeByte(BMA400_ADDRESS,BMA400_TAP_CONFIG1, quiet_dt_8 << 4 | quiet_80 << 2 | tics_th_6); // set tap timings
 
-   writeByte(BMA400_ADDRESS,BMA400_INT12_MAP, 0x04);              // map tapping to INT1
-   writeByte(BMA400_ADDRESS,BMA400_INT12_IO_CTRL, 0x02);          // set INT1 interrupt push-pull, active HIGH 
-
-   writeByte(BMA400_ADDRESS,BMA400_INT_CONFIG1,0x01 << 7 | 0x08 | 0x04);     // enable latching interrupts, double and single tap interrupts
-   // writeByte(BMA400_ADDRESS,BMA400_INT_CONFIG1, 0x04);     // enable double tap interrupts
+    
 
 }
 

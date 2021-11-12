@@ -110,12 +110,43 @@
 #define BMA400_TAP_CONFIG       0x57
 #define BMA400_TAP_CONFIG1      0x58
 
+#define BMA400_STEP_COUNTERCONFIG0    0x59
+#define BMA400_STEP_COUNTERCONFIG1    0x5A 
+#define BMA400_STEP_COUNTERCONFIG2    0x5B
+#define BMA400_STEP_COUNTERCONFIG3    0x5C
+#define BMA400_STEP_COUNTERCONFIG4    0x5D
+#define BMA400_STEP_COUNTERCONFIG5    0x5E
+#define BMA400_STEP_COUNTERCONFIG6    0x5F
+#define BMA400_STEP_COUNTERCONFIG7    0x60
+#define BMA400_STEP_COUNTERCONFIG8    0x61
+#define BMA400_STEP_COUNTERCONFIG9    0x62
+#define BMA400_STEP_COUNTERCONFIG10   0x63
+#define BMA400_STEP_COUNTERCONFIG11   0x64
+#define BMA400_STEP_COUNTERCONFIG12   0x65
+#define BMA400_STEP_COUNTERCONFIG13   0x66
+#define BMA400_STEP_COUNTERCONFIG14   0x67
+#define BMA400_STEP_COUNTERCONFIG15   0x68
+#define BMA400_STEP_COUNTERCONFIG16   0x69
+#define BMA400_STEP_COUNTERCONFIG17   0x6A
+#define BMA400_STEP_COUNTERCONFIG18   0x6B
+#define BMA400_STEP_COUNTERCONFIG19   0x6C
+#define BMA400_STEP_COUNTERCONFIG20   0x6D
+#define BMA400_STEP_COUNTERCONFIG21   0x6E
+#define BMA400_STEP_COUNTERCONFIG22   0x6F
+#define BMA400_STEP_COUNTERCONFIG23   0x70
+
+#define BMA400_STEP_CNT0  0x15
+#define BMA400_STEP_CNT1  0x16
+#define BMA400_STEP_CNT2  0x17
+
+
+
 #define BMA400_IF_CONF          0x7C
 #define BMA400_SELF_TEST        0x7D
 #define BMA400_CMD              0x7E
 
 
-#define BMA400_ADDRESS  0x14  // if ADO is 0 (default)
+#define BMA400_ADDRESS  0x14  // 0x 14 if ADO is 0 (default)
 
 
 #define AFS_2G           0x00
@@ -183,6 +214,7 @@ class BMA400
   uint8_t getChipID();
   void initBMA400(uint8_t Ascale, uint8_t SR, uint8_t power_Mode, uint8_t OSR, uint8_t acc_filter);
   void initBMA400forTapping(uint8_t tap_sensitivity);
+  void enableStepCountNotWrist();
   void CompensationBMA400(uint8_t Ascale, uint8_t SR, uint8_t power_Mode, uint8_t OSR, uint8_t acc_filter, float * offset);
   void resetBMA400();
   void selfTestBMA400();
